@@ -65,10 +65,12 @@ export const loginUser = async (req, res, next) => {
       return sendResponse(res, 404, 'Password is incorrect');
     }
 
-    const token = jwt.sign(process.env.JWT_SECRET, { expiresIn: '100d' });
-    console.log(token);
-
-    return sendResponse(res, 200, 'success', token);
+    const token = await jwt.sign({ _id: user._id }, 'MY_SECRET', {
+      expiresIn: '10d',
+    });
+    sendResponse(res, 200, 'Success', {
+      user: { name: user.name, email: user.email, _id: user._id, token: token },
+    });
   } catch (error) {
     console.log(error);
     sendResponse(res, 400, error);
